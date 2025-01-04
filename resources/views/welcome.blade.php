@@ -15,7 +15,12 @@
     </head>
     <body class="font-sans antialiased dark:bg-black dark:text-white/50">
         <div id="app">
-            <home-component></home-component>
+            <v-app>
+               <navbar-component></navbar-component>    
+                <v-main class="mx-4 my-2">
+                    <router-view></router-view>
+                </v-main>
+            </v-app>
         </div>
     </body>
 </html>
