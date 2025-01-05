@@ -10,6 +10,7 @@ class Meeting extends Model
     use HasFactory;
 
     protected $fillable = [
+        'stream_key',
         'name',
         'stream_url',
         'total_visitors',
