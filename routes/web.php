@@ -18,3 +18,7 @@ Route::post('/meetings/{id}/leave', [VisitorController::class, 'leave']);
 
 Route::post('/messages', [MessageController::class, 'store']);
 Route::get('/messages/{meeting_id}', [MessageController::class, 'index']);
+
+Route::get('{any}', function () {
+    return view('welcome');
+})->where('any','.*');
