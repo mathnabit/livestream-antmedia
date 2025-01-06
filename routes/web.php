@@ -12,6 +12,7 @@ Route::get('/', function () {
 Route::get('/meetings', [MeetingController::class, 'index']);
 Route::post('/meetings', [MeetingController::class, 'store']);
 Route::get('/meetings/{id}', [MeetingController::class, 'show']);
+Route::post('/meetings/{id}', [MeetingController::class, 'update']);
 
 Route::post('/meetings/{id}/join', [VisitorController::class, 'join']);
 Route::post('/meetings/{id}/leave', [VisitorController::class, 'leave']);
