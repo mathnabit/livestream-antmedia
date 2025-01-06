@@ -10,20 +10,22 @@ class Meeting extends Model
     use HasFactory;
 
     protected $fillable = [
-        'stream_key',
         'name',
-        'stream_url',
-        'total_visitors',
-        'current_viewers',
+        'key',
+        'url',
+        'status',
+        'duration',
+        'start_time',
+        'total_watchers',
     ];
 
-    public function visitors()
-    {
-        return $this->hasMany(Visitor::class);
-    }
+    // public function visitors()
+    // {
+    //     return $this->hasMany(Visitor::class);
+    // }
 
-    public function messages()
-    {
-        return $this->hasMany(Message::class);
-    }
+    // public function messages()
+    // {
+    //     return $this->hasMany(Message::class);
+    // }
 }
