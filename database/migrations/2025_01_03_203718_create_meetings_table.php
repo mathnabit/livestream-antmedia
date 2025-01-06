@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('meetings', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('stream_url')->unique();
-            $table->integer('total_visitors')->default(0);
-            $table->integer('current_viewers')->default(0);
+            $table->string('key')->unique();
+            $table->string('url')->unique();
+            $table->string('status')->default('created');
+            $table->integer('duration')->default(0);
+            $table->integer('start_time')->default(0);
+            $table->integer('total_watchers')->default(0);
             $table->timestamps();
         });
     }
