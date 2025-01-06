@@ -19,10 +19,13 @@ class MeetingController extends Controller
         try {
             // Create a new meeting
             $meeting = Meeting::create([
-                'stream_key' => $request->input('streamId'),
                 'name' => $request->input('name'),
-                'stream_url' => $request->input('rtmpURL'),
-                'total_views' => 0,
+                'key' => $request->input('streamId'),
+                'url' => $request->input('rtmpURL'),
+                'status' => $request->input('status'),
+                'start_time' => $request->input('startTime'),
+                'duration' => $request->input('duration'),
+                'total_watchers' => 0,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -42,8 +45,8 @@ class MeetingController extends Controller
 
         try {
             // Find the meeting by key and update the total watchers
-            $meeting = Meeting::where('stream_key', $id)->firstOrFail();
-            $meeting->total_visitors = $request->input('totalWatchers');
+            $meeting = Meeting::where('key', $id)->firstOrFail();
+            $meeting->total_watchers = $request->input('totalWatchers');
             $meeting->save();
 
             return response()->json([
