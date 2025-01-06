@@ -41,7 +41,8 @@
                                 color="blue-lighten-2"
                                 density="comfortable"
                                 icon="mdi-identifier"
-                                variant="plain"
+                                variant="text"
+                                v-bind="props"
                                 @click="copyStreamKey(item)"
                             >
                             </v-btn>
@@ -54,7 +55,8 @@
                                 color="blue-lighten-2"
                                 density="comfortable"
                                 icon="mdi-link"
-                                variant="plain"
+                                variant="text"
+                                v-bind="props"
                                 @click="copyStreamUrl(item)"
                             >
                             </v-btn>
@@ -67,7 +69,8 @@
                                 color="green-lighten-2"
                                 density="comfortable"
                                 icon="mdi-pencil-outline"
-                                variant="plain"
+                                variant="text"
+                                v-bind="props"
                                 @click="editStreamName(item)"
                             ></v-btn>
                         </template>
@@ -80,11 +83,18 @@
                                 icon="mdi-delete-outline"
                                 variant="text"
                                 v-bind="props"
+                                @click="deleteStream(item)"
                             ></v-btn>
                         </template>
                     </v-tooltip>
                 </template>
             </v-data-table>
+            <v-snackbar
+                v-model="snackbarCopy"
+                color="primary"
+            >
+                {{ snackbarCopyMessage }}
+            </v-snackbar>
         </v-card>
     </v-container>
 </template>
@@ -96,23 +106,52 @@ export default {
             search: '',
             headers: [
                 { key: 'name', title: 'Name' },
-                { key: 'created_at', title: 'Creation Date', align: 'center' },
                 { key: 'status', title: 'Status', align: 'center' },
+                { key: 'total_watchers', title: 'Watchers', align: 'center' },
+                { key: 'start_time', title: 'Start Date', align: 'center' },
                 { key: 'duration', title: 'Duration', align: 'center' },
                 { key: 'actions', title: 'Actions', sortable: false, align: 'center' },
             ],
-            meetings: [
-                {
-                    name: 'meeting-antmedia-789',
-                    created_at: '2025-01-06',
-                    status: 'created',
-                    duration: 5,
-                },  
-            ],
+            meetings: [],
+            snackbarCopy: false,
+            snackbarCopyMessage: '',
         };
     },
+    mounted() {
+        this.getMeetings();
+    },
     methods: {
-        
+        getMeetings() {
+            axios.get('/meetings')
+                .then(response => {
+                    this.meetings = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        copyStreamKey(item) {
+            navigator.clipboard.writeText(item.key)
+                .then(() => {
+                    this.snackbarCopy = true;
+                    this.snackbarCopyMessage = 'Stream Key Copied';
+                })
+                .catch(() => {
+                    this.snackbarCopy = true;
+                    this.snackbarCopyMessage = 'Failed to Copy Stream Key';
+                });
+        },
+        copyStreamUrl(item) {
+            navigator.clipboard.writeText(item.url)
+                .then(() => {
+                    this.snackbarCopy = true;
+                    this.snackbarCopyMessage = 'Stream URL Copied';
+                })
+                .catch(() => {
+                    this.snackbarCopy = true;
+                    this.snackbarCopyMessage = 'Failed to Copy Stream URL';
+                });
+        },
     },
 };
 </script>
