@@ -1,11 +1,11 @@
 <template>
    <v-container>
-        <v-row align="center" justify="center" class="mb-2">
-            <v-col cols="5">
-                <v-sheet class="pa-4 mx-auto" :elevation="1" rounded>
+        <v-sheet class="pt-4 px-4 mx-auto" :elevation="1" rounded>
+            <v-row align="center" justify="center" class="mb-2">
+                <v-col cols="5">
                     <v-form @submit.prevent="createMeeting">
                         <v-text-field
-                            v-model="meetingNameCreation"
+                            v-model="createdMeetName"
                             :rules="rules"
                             label="Enter Meeting Name"
                             variant="outlined"
@@ -17,52 +17,44 @@
                                 class="" 
                                 type="submit" 
                                 color="indigo" 
-                                :loading="loading">
+                                prepend-icon="mdi-plus"
+                                :loading="loading"
+                            >
                                 Create Meeting
                             </v-btn>
                         </div>
                     </v-form>
-                </v-sheet>
-                <v-snackbar
-                    v-model="snackbarMeet"
-                    timeout="3000"
-                    :color="snackbarMeetStatus == 'success' ? 'success' : 'red-darken-2'"
-                >
-                    {{ snackbarMeetMessage }}
-                </v-snackbar>
-            </v-col>
-            <v-col cols="7">
-                <v-sheet class="d-flex flex-wrap pa-4" :elevation="1" rounded>
-                    <v-text-field
-                        label="Meeting Name"
-                        v-model="meetingName"
-                        prepend-icon="mdi-view-stream"
-                        variant="outlined"
-                        density="compact"
-                        class="flex-1-0"
-                        readonly
-                    ></v-text-field>
-                    <v-text-field
-                        label="Status"
-                        v-model="streamStatus"
-                        prepend-icon="mdi-information-box"
-                        variant="outlined"
-                        density="compact"
-                        class="ml-2"
-                        readonly
-                    ></v-text-field>
+                    <v-snackbar
+                        v-model="snackbarMeet"
+                        timeout="3000"
+                        :color="snackbarMeetStatus == 'success' ? 'success' : 'red-darken-2'"
+                    >
+                        {{ snackbarMeetMessage }}
+                    </v-snackbar>
+                </v-col>
+                <v-col cols="7"> 
                     <v-text-field
                         label="Stream URL"
                         v-model="streamUrl"
                         prepend-icon="mdi-link-box"
                         variant="outlined"
                         density="compact"
-                        class="flex-1-1-100"
+                        class=""
                         readonly
                     ></v-text-field>
-                </v-sheet>
-            </v-col>
-        </v-row>
+                    <div class="d-flex justify-center">
+                        <v-btn 
+                            class="" 
+                            color="indigo" 
+                            prepend-icon="mdi-content-copy"
+                            @click="copyToClipBoard(streamUrl)"
+                        >
+                            Copy URL
+                        </v-btn>
+                    </div>
+                </v-col>
+            </v-row>
+        </v-sheet>
         <!-- <v-divider thickness="3"></v-divider> -->
         <v-sheet class="pb-6 mx-auto" :elevation="1" rounded>
         <v-row justify="center" class="mx-auto mt-1 mb-0">
@@ -77,7 +69,9 @@
             </v-col>
             <v-col cols="4">
                 <v-btn 
-                    color="indigo" >
+                    color="indigo" 
+                    prepend-icon="mdi-play"
+                >
                     Play Meeting
                 </v-btn>
             </v-col>
@@ -97,12 +91,18 @@
             <v-list
                 class="ml-4"
                 width="300"
-                height="180"
+                height="230"
                 border
             >
                 <v-list-item
-                    title="Name"
+                    prepend-icon="mdi-view-stream"
+                    title="Meeting Name" 
                     subtitle="meeting 123"
+                ></v-list-item>
+                <v-list-item
+                    prepend-icon="mdi-information-box"
+                    title="Meeting Status" 
+                    subtitle="broadcasting"
                 ></v-list-item>
                 <v-list-item
                     prepend-icon="mdi-database-eye"
@@ -223,6 +223,11 @@ export default {
                 });
             });
         },
+        // Copy the stream URL to the clipboard
+        copyToClipBoard(text) {
+            navigator.clipboard.writeText(text);
+        },
+        
     }
 };
 </script>
