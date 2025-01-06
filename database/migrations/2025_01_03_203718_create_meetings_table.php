@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('key')->unique();
             $table->string('url')->unique();
             $table->string('status')->default('created');
-            $table->integer('duration')->default(0);
-            $table->integer('start_time')->default(0);
+            $table->bigInteger('duration')->default(0);
+            $table->bigInteger('start_time')->default(0);
             $table->integer('total_watchers')->default(0);
             $table->timestamps();
         });

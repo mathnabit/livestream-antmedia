@@ -84,9 +84,9 @@
         </v-row>
         <v-row justify="center">
         <col cols="8">   
-            <v-card title="Stream Video" width="700" height="380">
+            <v-card title="Stream Video" width="700" height="400" justify="center">
                 <iframe 
-                    width="700" height="380" 
+                    width="700" height="350" 
                     :src="'https://ams.pm.tts.live:5443/DevTest3/play.html?id=' + playedMeetKey" 
                     frameborder="0" allowfullscreen
                     v-if="playedMeetStatus === 'broadcasting'"
@@ -304,15 +304,15 @@ export default {
                         this.snackbarFeedMessage = `${Math.abs(watchersDifference)} ${Math.abs(watchersDifference) === 1 ? 'viewer' : 'viewers'} left`;
                     }
                     // Update the meeting total watchers in the database
-                    if (this.playedMeetStatus == 'broadcasting') {
-                        this.updateMeeting()
+                    //if (this.playedMeetStatus == 'broadcasting') {
+                        this.updateMeeting(statusResponse)
                             .then(() => {
                                 console.log('meeting updated successfuly');
                             })
                             .catch((error) => {
                                 console.error('Error updating meeting : ', error);
                             });
-                    }
+                    //}
                     return this.playedMeetStatus;
                 })
                 .catch((error) => {
@@ -323,10 +323,18 @@ export default {
                 });
         },
         // Update meeting total watchers in database
-        updateMeeting() {
+        updateMeeting(meetingData) {
             return new Promise((resolve, reject) => {
+                console.log('Updating meeting... ', meetingData);
                 axios
-                .post(`/meetings/${this.playedMeetKey}`, { totalWatchers: this.totalWatchers })
+                .post(`/meetings/${this.playedMeetKey}`, 
+                    { 
+                        status: meetingData.data.status,
+                        startTime: meetingData.data.startTime,
+                        duration: meetingData.data.duration,
+                        totalWatchers: this.totalWatchers 
+                    }
+                )
                 .then((response) => {
                     resolve(response.data);
                 })
