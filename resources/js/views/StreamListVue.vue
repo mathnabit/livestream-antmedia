@@ -22,6 +22,25 @@
                 :items="meetings"
                 :search="search"
             >
+                <template v-slot:item.name="{ item }">
+                    <v-text-field
+                        v-model="item.name"
+                        variant="plain"
+                        density="compact"
+                        hide-details
+                        :readonly="editingField !== item.id"
+                    ></v-text-field>
+                    <v-btn
+                        class="ma-0"
+                        color="green-lighten-2"
+                        density="comfortable"
+                        icon="mdi-check-outline"
+                        variant="text"
+                        v-bind="props"
+                        v-if="editingField === item.id"
+                        @click="saveMeetName(item)"
+                    ></v-btn>
+                </template>
                 <template v-slot:item.status="{ item }">
                     <div class="text-start">
                         <v-chip
@@ -71,7 +90,7 @@
                                 icon="mdi-pencil-outline"
                                 variant="text"
                                 v-bind="props"
-                                @click="editStreamName(item)"
+                                @click="editMeetName(item)"
                             ></v-btn>
                         </template>
                     </v-tooltip>
@@ -83,18 +102,54 @@
                                 icon="mdi-delete-outline"
                                 variant="text"
                                 v-bind="props"
-                                @click="deleteStream(item)"
+                                @click="deleteMeet(item)"
                             ></v-btn>
                         </template>
                     </v-tooltip>
+                    <!-- Confirm Delete Dialog -->
+                    <v-dialog
+                        v-model="deleteDialog"
+                        width="auto"
+                    >
+                        <v-card
+                            max-width="400"
+                            prepend-icon="mdi-alert"
+                            title="Are You Sure !"
+                            text="This action cannot be undone."
+                        >
+                            <template v-slot:actions>
+                                <v-btn
+                                    class="ms-auto"
+                                    text="Yes"
+                                    color="error"
+                                    @click="saveDeleteMeet()"
+                                ></v-btn>
+                                <v-btn
+                                    class="ms-auto"
+                                    text="Cancel"
+                                    color="primary"
+                                    @click="deleteDialog = false"
+                                ></v-btn>
+                            </template>
+                        </v-card>
+                    </v-dialog>
                 </template>
             </v-data-table>
+            <!-- Copy Status Snackbar -->
             <v-snackbar
                 v-model="snackbarCopy"
                 color="primary"
             >
                 {{ snackbarCopyMessage }}
             </v-snackbar>
+            <!-- Edit Delete Status Snackbar -->
+            <v-snackbar
+                v-model="snackbarEditDelete"
+                :color="snackbarEditDeleteStatus === 'success' ? 'success' : 'error'"
+            >
+                {{ snackbarEditDeleteMessage }}
+            </v-snackbar>
+            
         </v-card>
     </v-container>
 </template>
@@ -105,16 +160,25 @@ export default {
         return {
             search: '',
             headers: [
-                { key: 'name', title: 'Name' },
+                { key: 'name', title: 'Meeting Name', width:"20%", align: 'start' },
                 { key: 'status', title: 'Status', align: 'center' },
                 { key: 'total_watchers', title: 'Watchers', align: 'center' },
-                { key: 'start_time', title: 'Start Date', align: 'center' },
+                { key: 'start_time', title: 'Start At', align: 'center' },
                 { key: 'duration', title: 'Duration', align: 'center' },
                 { key: 'actions', title: 'Actions', sortable: false, align: 'center' },
             ],
             meetings: [],
+            // Copy data
             snackbarCopy: false,
             snackbarCopyMessage: '',
+            // Edit & Delete data
+            editingField: null,
+            snackbarEditDelete: false,
+            snackbarEditDeleteStatus: '',
+            snackbarEditDeleteMessage: '',
+            // confirm delete data
+            deletedMeet: null,
+            deleteDialog: false,
         };
     },
     mounted() {
@@ -151,6 +215,48 @@ export default {
                     this.snackbarCopy = true;
                     this.snackbarCopyMessage = 'Failed to Copy Stream URL';
                 });
+        },
+        editMeetName(item) {
+            this.editingField = item.id;
+        },
+        saveMeetName(item) {
+            this.inputReadOnly = false;
+            axios.post(`/meetings/${item.key}`, { meetName: item.name })
+                .then(response => {
+                    this.snackbarEditDeleteStatus = 'success';
+                    this.snackbarEditDeleteMessage = 'Meeting Name Updated';
+                    this.snackbarEditDelete = true;
+                    this.getMeetings();
+                })
+                .catch(error => {
+                    this.snackbarEditDelete = true;
+                    this.snackbarEditDeleteMessage = 'Failed to Update Meeting Name';
+                    this.snackbarEditDeleteStatus = 'error';
+                });
+            // Reset the editing state    
+            this.editingField = null;
+        },
+        deleteMeet(item) {
+            this.deletedMeet = item;
+            this.deleteDialog = true;
+        },
+        saveDeleteMeet() {
+            axios.delete(`/meetings/${this.deletedMeet.id}`)
+                .then(response => {
+                    this.deleteDialog = false;
+                    this.snackbarEditDeleteStatus = 'success';
+                    this.snackbarEditDeleteMessage = 'Meeting Deleted';
+                    this.snackbarEditDelete = true;
+                    this.getMeetings();
+                    this.deletedMeet = null;
+                })
+                .catch(error => {
+                    this.deleteDialog = false;
+                    this.snackbarEditDelete = true;
+                    this.snackbarEditDeleteMessage = 'Failed to Delete Meeting';
+                    this.snackbarEditDeleteStatus = 'error';
+                });
+            
         },
     },
 };
