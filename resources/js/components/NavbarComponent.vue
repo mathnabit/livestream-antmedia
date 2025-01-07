@@ -37,7 +37,7 @@
     </v-navigation-drawer>
 
     <!-- App Bar -->
-    <v-app-bar app clipped-right flat class="grey-lighten-2">
+    <v-app-bar app clipped-right flat  class="grey-lighten-2">
         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
         <v-toolbar-title class="">
             <span class="font-weight-bold">Antmedia </span>
@@ -67,7 +67,7 @@ export default {
     background-color: #3949AB !important;
 }
 .grey-lighten-2 {
-    background-color: #E0E0E0 !important;
+    background-color: #e8e7e7 !important;
 }
 
 .v-btn--plain {
