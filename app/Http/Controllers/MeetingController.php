@@ -43,7 +43,6 @@ class MeetingController extends Controller
 
         return "$hours:$minutes:$seconds";
     }
-
     // Format start_time in seconds to a human-readable date.
     private function formatStartTime($startTime)
     {
@@ -147,10 +146,11 @@ class MeetingController extends Controller
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Failed to update the meeting: ' . $e,
+                'message' => 'Failed update the meeting: ' . $e,
             ], 404);
         }   
     }
+
     // Delete a meeting
     public function delete($id)
     {
@@ -182,6 +182,70 @@ class MeetingController extends Controller
             return response()->json([
                 'message' => 'Delete failed: ' . $e,
             ], 404);
+        }
+    }
+
+    // Get meeting statistics
+    public function statistics()
+    {
+        // Calculate total meetings
+        $totalMeetings = Meeting::count();
+
+        // Calculate total watchers 
+        $totalWatchers = Meeting::sum('total_watchers');
+
+        // Calculate total hours (duration is in ms)
+        $totalHours = Meeting::sum('duration') / (1000 * 3600); 
+
+        return response()->json([
+            'totalMeetings' => $totalMeetings,
+            'totalWatchers' => $totalWatchers,
+            'totalHours' => $totalHours,
+        ], 200);
+    }
+
+    // Synchnorize meetings with the antmedia server
+    public function synchronize()
+    {
+        try {
+            // Fetch all meetings 
+            $meetings = Meeting::all();
+
+            // Define the token
+            $token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.AsK6EJG3nbHVjR-iHvmKMfRP7Ug7RyaZQ6MaDoqy6Go';
+
+            foreach ($meetings as $meeting) {
+                // Define the API URL
+                $apiUrl = "https://ams.pm.tts.live:5443/DevTest3/rest/v2/broadcasts/{$meeting->key}";
+
+                $response = Http::withHeaders([
+                    'Authorization' => $token,
+                    'Content-Type' => 'application/json',
+                ])->get($apiUrl);
+
+                if ($response->successful()) {
+                    // Fetch the updated meeting data
+                    $apiMeet = $response->json();
+                    // Update the meeting in the database
+                    $meeting->update([
+                        'name' => $apiMeet['name'], 
+                        'key' => $apiMeet['streamId'], 
+                        'url' => $apiMeet['rtmpURL'], 
+                        'status' => $apiMeet['status'], 
+                        'start_time' => $apiMeet['startTime'], 
+                        'duration' => $apiMeet['duration'], 
+                    ]);
+                    $meeting->save();
+                }   
+            }
+            return response()->json([
+                'message' => 'Meetings synchronised successfully',
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to fetch meetings: ' . $e,
+            ], 500);
         }
     }
 
