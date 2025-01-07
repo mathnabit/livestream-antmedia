@@ -13,6 +13,7 @@ Route::get('/meetings', [MeetingController::class, 'index']);
 Route::post('/meetings', [MeetingController::class, 'store']);
 Route::get('/meetings/{id}', [MeetingController::class, 'show']);
 Route::post('/meetings/{id}', [MeetingController::class, 'update']);
+Route::delete('/meetings/{id}', [MeetingController::class, 'delete']);
 
 
 
