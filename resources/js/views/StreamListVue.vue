@@ -220,7 +220,6 @@ export default {
             this.editingField = item.id;
         },
         saveMeetName(item) {
-            this.inputReadOnly = false;
             axios.post(`/meetings/${item.key}`, { meetName: item.name })
                 .then(response => {
                     this.snackbarEditDeleteStatus = 'success';

@@ -12,13 +12,13 @@
                 <v-badge
                     bordered
                     color="green darken-2"
-                    content="100"
+                    :content="totalMeetings"
                 >
                     <v-icon
                         large
                         color="green darken-2"
                     >
-                        mdi-toolbox-outline
+                        mdi-view-stream-outline
                     </v-icon>
                 </v-badge>
             </template>
@@ -44,13 +44,13 @@
               <v-badge
                 bordered
                 color="blue darken-2"
-                content="200"
+                :content="totalWatchers"
               >
                 <v-icon
                   large
                   color="blue darken-2"
                 >
-                  mdi-shape-outline
+                  mdi-account-eye-outline
                 </v-icon>
               </v-badge>
             </template>
@@ -76,14 +76,14 @@
               <v-badge
                 bordered
                 color="purple darken-2"
-                content="85"
+                :content="totalHours"
                 
               >
                 <v-icon
                   large
                   color="purple darken-2"
                 >
-                  mdi-gesture-tap-button
+                  mdi-clock-outline
                 </v-icon>
               </v-badge>
             </template>
@@ -99,6 +99,13 @@
           </v-card>
         </v-col>
       </v-row>
+    <!-- Copy Status Snackbar -->
+    <v-snackbar
+        v-model="snackbarSync"
+        color="primary"
+    >
+        {{ snackbarSyncMessage }}
+    </v-snackbar>
     </v-container>
 </template>
 
@@ -106,6 +113,14 @@
 export default {
     data() {
         return {
+            // statistics data
+            totalMeetings: 0,
+            totalWatchers: 0,
+            totalHours: 0,
+            // snackbar sync
+            snackbarSync: false,
+            snackbarSyncMessage: 'Meetings synchronized successfully',
+            // styling data
             hover: {
                 meetings: false,
                 watchers: false,
@@ -113,8 +128,33 @@ export default {
             },
         };
     },
+    mounted() {
+        this.asyncMeetingData();
+        this.getStatistics();
+    },
     methods: {
-        
+        // asynchonise meeting data from the antmedia server
+        asyncMeetingData(){
+            axios.post('/meetings/sync/antmedia')
+                .then(response => {
+                    this.snackbarSync = true;;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        // fetch statistics data
+        getStatistics() {
+            axios.get('/meetings/statistics')
+                .then(response => {
+                    this.totalMeetings = response.data.totalMeetings;
+                    this.totalWatchers = response.data.totalWatchers;
+                    this.totalHours = response.data.totalHours;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
     }
 };
 </script>

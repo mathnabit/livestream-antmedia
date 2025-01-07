@@ -1,7 +1,7 @@
 <template>
    <v-container>
         <v-sheet class="pt-4 px-4 mx-auto" :elevation="1" rounded>
-            <v-row align="center" justify="center" class="mb-2">
+            <v-row justify="center" class="mb-2">
                 <v-col cols="5">
                     <v-form @submit.prevent="createMeeting" v-model="isFormCreateValid">
                         <v-text-field
