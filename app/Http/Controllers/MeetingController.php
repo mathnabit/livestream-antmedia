@@ -194,13 +194,13 @@ class MeetingController extends Controller
         // Calculate total watchers 
         $totalWatchers = Meeting::sum('total_watchers');
 
-        // Calculate total hours (duration is in ms)
-        $totalHours = Meeting::sum('duration') / (1000 * 3600); 
+        // Calculate total minutes (duration is in ms)
+        $totalMinutes = Meeting::sum('duration') / (1000 * 60); 
 
         return response()->json([
             'totalMeetings' => $totalMeetings,
             'totalWatchers' => $totalWatchers,
-            'totalHours' => $totalHours,
+            'totalMinutes' => $totalMinutes,
         ], 200);
     }
 

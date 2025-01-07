@@ -69,14 +69,14 @@
           <v-card 
             shaped hover
             class="stat-card pa-2"
-            @mouseover="hover.hours = true"
-            @mouseleave="hover.hours = false"
+            @mouseover="hover.minutes = true"
+            @mouseleave="hover.minutes = false"
           >
             <template v-slot:prepend>
               <v-badge
                 bordered
                 color="purple darken-2"
-                :content="totalHours"
+                :content="Math.round(totalMinutes)"
                 
               >
                 <v-icon
@@ -93,7 +93,7 @@
                 label
                 outlined
               >
-                Hours
+                Minutes
               </v-chip>
             </template>
           </v-card>
@@ -116,7 +116,7 @@ export default {
             // statistics data
             totalMeetings: 0,
             totalWatchers: 0,
-            totalHours: 0,
+            totalMinutes: 0,
             // snackbar sync
             snackbarSync: false,
             snackbarSyncMessage: 'Meetings synchronized successfully',
@@ -124,7 +124,7 @@ export default {
             hover: {
                 meetings: false,
                 watchers: false,
-                hours: false,
+                minutes: false,
             },
         };
     },
@@ -149,7 +149,7 @@ export default {
                 .then(response => {
                     this.totalMeetings = response.data.totalMeetings;
                     this.totalWatchers = response.data.totalWatchers;
-                    this.totalHours = response.data.totalHours;
+                    this.totalMinutes = response.data.totalMinutes;
                 })
                 .catch(error => {
                     console.log(error);
