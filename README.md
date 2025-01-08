@@ -89,7 +89,8 @@ Vue.js is integrated with Laravel using the method of [Embedded Vue Components i
 ### JWT Usage
 
 To simplify Antmedia API Fetching, and as user authentication was not a requirement in this test, a static JWT is used for all requests. 
-The JWT Token is generated with this secret key **5R9Pw4sgcCbNYDpseVEtNp93xtRb0Vtb**.
+> [!IMPORTANT]  
+> The JWT Token is generated with this *Secret Key* : **5R9Pw4sgcCbNYDpseVEtNp93xtRb0Vtb**
 
 
 ## Testing 
