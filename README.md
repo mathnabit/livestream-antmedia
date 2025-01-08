@@ -54,27 +54,37 @@ For now, the database is very simple and contains one table.
 
 - **Backend:** Laravel (PHP framework)
 - **Frontend:** Vue.js (JavaScript framework)
+- **UI Component Framework:** Vuetify
 - **Database:** MySQL
 - **Real-Time Streaming:** Antmedia
 
 
 ## Architecture Overview
 
-### Using Vue.js with Laravel
+The application follows a modern web development architecture, combining **Laravel** for backend logic (serves as the API layer) and **Vue.js** for frontend logic and interactivity (serves as the user interface layer). 
+Below is a detailed breakdown of the architecture and how data fetching and API interactions are handled, including integration with the Antmedia Server API:
 
-Vue.js in integrated with Laravel using the method of [Embedded Vue Components in Blade Files](https://vueschool.io/articles/vuejs-tutorials/the-ultimate-guide-for-using-vue-js-with-laravel/).
+### Integration Vue.js with Laravel
+
+Vue.js is integrated with Laravel using the method of [Embedded Vue Components in Blade Files](https://vueschool.io/articles/vuejs-tutorials/the-ultimate-guide-for-using-vue-js-with-laravel/).
 
 > With Vue.js components embedded within Blade files, Laravel serves as the core application.
 > This strategy preserves Laravel's solid architectural foundation while incorporating dynamic Vue.js components,
 > resulting in a more engaging user experience without sacrificing the familiarity of traditional Laravel multi-page and server-side development.
 
 
-### API Data Fetching
+### Antmedia API
 
-
+- **Integration with Antmedia Server API:** The application integrates with the Antmedia Server API to manage live streams and fetch stream-related data.
+  Both Laravel and Vue.js interact with the Antmedia Server API, each serving a specific purpose: Vue.js handles creating and playing live meetings, while Laravel manages editing and deleting meetings.
+  
+- **API Data Fetching:** The application uses periodic fetching (polling) every 10 seconds to retrieve updates such as viewer counts, live feed updates and meetings data synchronizing.
+                        This approach was chosen instead of WebSockets for simplicity.
 
 ### JWT Usage
 
+To simplify Antmedia API Fetching, and as user authentication was not a requirement in this test, a static JWT is used for all requests. 
+The JWT Token is generated with this secret key **5R9Pw4sgcCbNYDpseVEtNp93xtRb0Vtb**.
 
 
 ## Testing 
@@ -83,8 +93,12 @@ Vue.js in integrated with Laravel using the method of [Embedded Vue Components i
 
 ## Future Improvements
 
+- Add user authentication and authorization for secure meeting management.
+- Implement WebSockets for real-time updates to enhance user experience.
+- Implement dynamic JWT management, including short-lived access tokens and refresh tokens, for enhanced security and scalability.
+- Add more meetings management features. 
 
-
+  
 ## License
 
 Any work or source code produced as part of this project, including but not limited to modifications, enhancements, or derivative works,
