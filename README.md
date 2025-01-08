@@ -78,8 +78,13 @@ Vue.js is integrated with Laravel using the method of [Embedded Vue Components i
 - **Integration with Antmedia Server API:** The application integrates with the Antmedia Server API to manage live streams and fetch stream-related data.
   Both Laravel and Vue.js interact with the Antmedia Server API, each serving a specific purpose: Vue.js handles creating and playing live meetings, while Laravel manages editing and deleting meetings.
   
-- **API Data Fetching:** The application uses periodic fetching (polling) every 10 seconds to retrieve updates such as viewer counts, live feed updates and meetings data synchronizing.
-                        This approach was chosen instead of WebSockets for simplicity.
+- **API Data Fetching:** The application uses periodic fetching (polling) to retrieve updates such as viewer counts, live feed updates and updated meetings data. Below are the scenarios where polling is used:
+  - **On First Access of the App:** When the application is first accessed, polling is used to synchronize data in local DB with Antmedia Server.
+  - **During a Played Meeting:** Polling occurs every 10 seconds to fetch updates.
+  - **When a Meeting Name is Updated:** Polling is triggered to synchronize the updated meeting data with local DB.
+
+ > This approach was chosen instead of WebSockets for simplicity.
+                        
 
 ### JWT Usage
 
@@ -89,6 +94,7 @@ The JWT Token is generated with this secret key **5R9Pw4sgcCbNYDpseVEtNp93xtRb0V
 
 ## Testing 
 
+The application includes two Unit Tests for now to ensure the correctness of two helper methods: *formatDuration* and *formatStartTime*. These tests are written using PHPUnit.
 
 
 ## Future Improvements
@@ -96,10 +102,10 @@ The JWT Token is generated with this secret key **5R9Pw4sgcCbNYDpseVEtNp93xtRb0V
 - Add user authentication and authorization for secure meeting management.
 - Implement WebSockets for real-time updates to enhance user experience.
 - Implement dynamic JWT management, including short-lived access tokens and refresh tokens, for enhanced security and scalability.
-- Add more meetings management features. 
+- Add more meetings management features.
+- Expand Tests by adding  Features, Integration and Automated tests.
 
   
 ## License
 
-Any work or source code produced as part of this project, including but not limited to modifications, enhancements, or derivative works,
-is the sole property of شركة التحول التقني (Tech Trans).
+Any work or source code produced as part of this project is the sole property of شركة التحول التقني (Tech Trans).
