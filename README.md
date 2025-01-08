@@ -83,8 +83,8 @@ Vue.js is integrated with Laravel using the method of [Embedded Vue Components i
   - **During a Played Meeting:** Polling occurs every 10 seconds to fetch updates.
   - **When a Meeting Name is Updated:** Polling is triggered to synchronize the updated meeting data with local DB.
 
- > This approach was chosen instead of WebSockets for simplicity.
-                        
+> [!NOTE]  
+> This approach was chosen instead of WebSockets for simplicity.                      
 
 ### JWT Usage
 
